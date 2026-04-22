@@ -1,5 +1,9 @@
 # zsh-toolkit
 
+<p align="center">
+  <img src="assets/zsh-toolkit.png" alt="zsh-toolkit logo" width="320">
+</p>
+
 A small Zsh toolkit you source from your existing `~/.zshrc`.
 
 ## Quick start
