@@ -7,12 +7,55 @@ alias tilv="_tilv"
 alias todo="_todo"
 alias todov="_todov"
 
+function _notes_topic_file() {
+  local dir="$1"
+  local topic="$2"
+
+  topic="${topic#"${topic%%[![:space:]]*}"}"
+  topic="${topic%"${topic##*[![:space:]]}"}"
+
+  [[ -z "$topic" ]] && return 1
+  [[ "$topic" == *.md ]] || topic="${topic}.md"
+
+  printf '%s/%s\n' "$dir" "$topic"
+}
+
 function _notes_pick_markdown() {
   local dir="$1"
   local prompt="$2"
+  local allow_create="${3:-false}"
   local -a files
+  local output query key selection
+  local -a lines
 
   files=("$dir"/*.md(N))
+
+  if [[ "$allow_create" == "true" ]]; then
+    output="$(
+      { (( ${#files[@]} > 0 )) && printf '%s\n' "${files[@]}"; } |
+        fzf --height=40% --reverse --border --prompt="$prompt" \
+            --preview 'bat --color=always {}' \
+            --print-query \
+            --expect=enter,ctrl-n \
+            --header='enter: open  ctrl-n: create from query'
+    )"
+
+    [[ -z "$output" ]] && return 0
+
+    lines=("${(@f)output}")
+    query="${lines[1]}"
+    key="${lines[2]}"
+    selection="${lines[3]}"
+
+    if [[ "$key" == "ctrl-n" ]]; then
+      _notes_topic_file "$dir" "$query"
+      return
+    fi
+
+    [[ -n "$selection" ]] && printf '%s\n' "$selection"
+    return 0
+  fi
+
   (( ${#files[@]} == 0 )) && return 0
 
   printf '%s\n' "${files[@]}" |
@@ -25,12 +68,15 @@ function _notes_open_or_pick() {
   local prompt="$2"
   local viewer="$3"
   local topic="$4"
+  local allow_create="${5:-false}"
   local file=""
 
+  mkdir -p "$dir"
+
   if [[ -n "$topic" ]]; then
-    file="$dir/${topic}.md"
+    file="$(_notes_topic_file "$dir" "$topic")" || return 1
   else
-    file="$(_notes_pick_markdown "$dir" "$prompt")"
+    file="$(_notes_pick_markdown "$dir" "$prompt" "$allow_create")"
     [[ -z "$file" ]] && return 0
   fi
 
@@ -68,7 +114,7 @@ function _notes_search() {
 #   til <topic>   open (or create) ~/.til/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _til() {
-  _notes_open_or_pick "$HOME/.til" "til > " "_zsh_toolkit_open_in_editor" "$1"
+  _notes_open_or_pick "$HOME/.til" "til > " "_zsh_toolkit_open_in_editor" "$1" true
 }
 
 # ---------------------------------------------------------------------------
@@ -90,7 +136,7 @@ function _tilv() {
 #   todo <topic>   open (or create) ~/.todo/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _todo() {
-  _notes_open_or_pick "$HOME/.todo" "todo > " "_zsh_toolkit_open_in_editor" "$1"
+  _notes_open_or_pick "$HOME/.todo" "todo > " "_zsh_toolkit_open_in_editor" "$1" true
 }
 
 # ---------------------------------------------------------------------------
