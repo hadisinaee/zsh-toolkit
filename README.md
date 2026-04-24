@@ -34,16 +34,39 @@ A small Zsh toolkit you source from your existing `~/.zshrc`.
 - `init.zsh` loads the shared toolkit.
 - `zsh/*.zsh` contains the tracked modules.
 - `zsh/local.zsh` is your ignored personal file.
+- `zsh/local.d/*.zsh` is an optional ignored split-file layer for larger local setups.
 
-Keep reusable defaults in tracked modules. Keep personal aliases, PATH changes, secrets, and machine-specific settings in `zsh/local.zsh`.
+Keep reusable defaults in tracked modules. Keep personal aliases, PATH changes, secrets, and machine-specific settings in `zsh/local.zsh` or, if you want to split them up, `zsh/local.d/*.zsh`.
 
 ## Personal overrides
 
-`zsh/local.zsh` loads after the shared modules, so your local settings win.
+`init.zsh` loads local overrides in this order:
+
+1. shared tracked modules
+2. optional `zsh/local.d/*.zsh` files, in lexical order
+3. `zsh/local.zsh`
+
+That keeps `zsh/local.zsh` as the final override file.
 
 ```zsh
 # zsh/local.zsh
 export PATH="$HOME/.local/bin:$PATH"
+alias gs='git status'
+```
+
+If your local config gets large, you can split it by topic:
+
+```sh
+mkdir -p ~/Projects/zsh-toolkit/zsh/local.d
+```
+
+```zsh
+# zsh/local.d/work.zsh
+export WORKON_HOME="$HOME/venvs"
+```
+
+```zsh
+# zsh/local.d/aliases.zsh
 alias gs='git status'
 ```
 
