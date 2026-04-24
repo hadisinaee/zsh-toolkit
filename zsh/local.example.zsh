@@ -1,4 +1,7 @@
 # Copy this file to zsh/local.zsh and customize it.
+# If your private config grows, you can also split it into zsh/local.d/*.zsh.
+# Files in zsh/local.d/ load before zsh/local.zsh, so local.zsh stays your
+# final override file.
 
 # Personal PATH additions.
 # export PATH="$HOME/.cargo/bin:$PATH"

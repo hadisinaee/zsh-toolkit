@@ -79,4 +79,17 @@ function _zsh_toolkit_load_modules() {
 
 _zsh_toolkit_load_modules
 
-[[ -f "$ZSH_CONFIG_ROOT/zsh/local.zsh" ]] && source "$ZSH_CONFIG_ROOT/zsh/local.zsh"
+function _zsh_toolkit_load_local_overrides() {
+  emulate -L zsh
+
+  local local_dir="$ZSH_CONFIG_ROOT/zsh/local.d"
+  local file
+
+  for file in "$local_dir"/*.zsh(.N); do
+    source "$file"
+  done
+
+  [[ -f "$ZSH_CONFIG_ROOT/zsh/local.zsh" ]] && source "$ZSH_CONFIG_ROOT/zsh/local.zsh"
+}
+
+_zsh_toolkit_load_local_overrides
