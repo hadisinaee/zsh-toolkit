@@ -67,11 +67,16 @@ if (( ! ${+ZSH_CONFIG_DISABLED_MODULES} )); then
   typeset -ga ZSH_CONFIG_DISABLED_MODULES=()
 fi
 
-local module file
-for module in "${ZSH_CONFIG_MODULES[@]}"; do
-  _zsh_config_array_contains "$module" "${ZSH_CONFIG_DISABLED_MODULES[@]}" && continue
-  file="$ZSH_CONFIG_ROOT/zsh/${module}.zsh"
-  [[ -f "$file" ]] && source "$file"
-done
+function _zsh_toolkit_load_modules() {
+  local module file
+
+  for module in "${ZSH_CONFIG_MODULES[@]}"; do
+    _zsh_config_array_contains "$module" "${ZSH_CONFIG_DISABLED_MODULES[@]}" && continue
+    file="$ZSH_CONFIG_ROOT/zsh/${module}.zsh"
+    [[ -f "$file" ]] && source "$file"
+  done
+}
+
+_zsh_toolkit_load_modules
 
 [[ -f "$ZSH_CONFIG_ROOT/zsh/local.zsh" ]] && source "$ZSH_CONFIG_ROOT/zsh/local.zsh"
