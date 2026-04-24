@@ -1,6 +1,6 @@
 # Resolve the repository root even when this file is sourced via a symlink.
 typeset -g ZSH_CONFIG_ROOT="${${(%):-%N}:A:h}"
-typeset -g ZSH_TOOLKIT_EDITOR="${ZSH_TOOLKIT_EDITOR:-${VISUAL:-${EDITOR:-vi}}}"
+typeset -g ZSH_TOOLKIT_EDITOR="${EDITOR:-${VISUAL:-${ZSH_TOOLKIT_EDITOR:-vi}}}"
 
 function _zsh_config_array_contains() {
   local needle="$1"
@@ -15,7 +15,7 @@ function _zsh_config_array_contains() {
 }
 
 function _zsh_toolkit_open_in_editor() {
-  local editor="${ZSH_TOOLKIT_EDITOR:-${VISUAL:-${EDITOR:-vi}}}"
+  local editor="${EDITOR:-${VISUAL:-${ZSH_TOOLKIT_EDITOR:-vi}}}"
   local -a cmd
 
   cmd=(${(z)editor})

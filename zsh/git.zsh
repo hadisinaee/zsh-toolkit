@@ -72,10 +72,41 @@ function ga() {
 }
 
 # ---------------------------------------------------------------------------
+# Helpers for gd preview and file extraction
+# ---------------------------------------------------------------------------
+function _zsh_toolkit_git_status_path() {
+  local line="$1"
+  local file_path="${line:3}"
+
+  [[ "$file_path" == *" -> "* ]] && file_path="${file_path##* -> }"
+  printf '%s\n' "$file_path"
+}
+
+function _zsh_toolkit_git_show_diff() {
+  local line="$1"
+  local file_path
+
+  file_path="$(_zsh_toolkit_git_status_path "$line")"
+  [[ -z "$file_path" ]] && return 1
+
+  if [[ "${line:0:2}" == "??" ]]; then
+    git diff --no-index --color=always -- /dev/null "$file_path"
+    return
+  fi
+
+  if ! git rev-parse --verify --quiet HEAD >/dev/null; then
+    git diff --cached --color=always -- "$file_path"
+    return
+  fi
+
+  git diff HEAD --color=always -- "$file_path"
+}
+
+# ---------------------------------------------------------------------------
 # gd - diff files, with fzf picker when no args given
 #
 # Usage:
-#   gd            fzf picker over changed files with diff preview
+#   gd            fzf picker over tracked + untracked files with diff preview
 #   gd <file>     direct git diff
 # ---------------------------------------------------------------------------
 function gd() {
@@ -84,12 +115,15 @@ function gd() {
     return
   fi
 
-  local file
-  file="$(git diff --name-only 2>/dev/null |
+  local selected file
+  selected="$(git status --short --untracked-files=all 2>/dev/null |
     fzf --height=50% --reverse --border --prompt='diff > ' \
-        --preview 'git diff --color=always -- {}')"
+        --preview 'zsh -c '"'"'source "'"$ZSH_CONFIG_ROOT"'/zsh/git.zsh"; _zsh_toolkit_git_show_diff "$1"'"'"' _ {}')"
 
-  [[ -n "$file" ]] && git diff -- "$file"
+  [[ -z "$selected" ]] && return 0
+
+  file="$(_zsh_toolkit_git_status_path "$selected")"
+  [[ -n "$file" ]] && _zsh_toolkit_git_show_diff "$selected"
 }
 
 # ---------------------------------------------------------------------------

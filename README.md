@@ -47,7 +47,9 @@ export PATH="$HOME/.local/bin:$PATH"
 alias gs='git status'
 ```
 
-Editor-based helpers use `ZSH_TOOLKIT_EDITOR`, then `VISUAL`, then `EDITOR`, with `vi` as the fallback.
+Editor-based helpers use `EDITOR`, then `VISUAL`, then `ZSH_TOOLKIT_EDITOR`, with `vi` as the fallback.
+
+In the `til` and `todo` pickers, press `Ctrl-N` to create a new note from the current query.
 
 ## Modules
 
