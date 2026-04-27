@@ -61,7 +61,7 @@ function ga() {
   selected="$(git -c color.status=always status --short 2>/dev/null |
     fzf --height=50% --reverse --border --prompt='add > ' \
         --ansi --multi \
-        --preview 'git diff --color=always -- {-1} | head -100')"
+        --preview 'git diff --color=always -- {-1}')"
 
   [[ -z "$selected" ]] && return 0
 

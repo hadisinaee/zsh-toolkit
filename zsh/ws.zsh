@@ -28,7 +28,7 @@ function _ws_pick_session() {
   tmux list-sessions -F '#S' 2>/dev/null |
     fzf --height=50% --reverse --border \
         --prompt='session > ' \
-        --preview 'zsh -c "source ~/.zshrc && ws-preview {}"' \
+        --preview 'zsh -c "source '"$ZSH_CONFIG_ROOT"'/zsh/ws.zsh && ws-preview {}"' \
         --preview-window='right:50%:wrap'
 }
 
@@ -109,7 +109,7 @@ function ws() {
 # ---------------------------------------------------------------------------
 function ws-ls() {
   if [[ -n "$TMUX" && -z "$WS_POPUP" ]]; then
-    WS_POPUP=1 tmux display-popup -w 80% -h 80% -E "WS_POPUP=1 zsh -c 'source ~/.zshrc && ws-ls'"
+    WS_POPUP=1 tmux display-popup -w 80% -h 80% -E "WS_POPUP=1 zsh -c 'source $ZSH_CONFIG_ROOT/zsh/ws.zsh && ws-ls'"
     unset WS_POPUP
     return
   fi
@@ -124,7 +124,7 @@ function ws-ls() {
   if [[ -n "$WS_POPUP" ]]; then
     preview_opts=(--preview-window=hidden)
   else
-    preview_opts=(--preview 'zsh -c "source ~/.zshrc && ws-preview {1}"' --preview-window='right:50%:wrap')
+    preview_opts=(--preview 'zsh -c "source '"$ZSH_CONFIG_ROOT"'/zsh/ws.zsh && ws-preview {1}"' --preview-window='right:50%:wrap')
   fi
 
   session="$(
