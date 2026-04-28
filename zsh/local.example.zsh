@@ -23,3 +23,8 @@
 # Run these once to populate zsh/bookmarks, then remove the export lines:
 # bm add avlbe ~/Projects/arrival/arrival-backend
 # bm add cm_home ~/Projects/consolidated_repo/configmgmt
+
+# Credentials — use the sec module instead of manual exports.
+# Run these once to populate zsh/secrets, then remove the export lines:
+# sec add GITLAB_ACCESS_TOKEN
+# sec add JIRA_ACCESS_TOKEN
