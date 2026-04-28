@@ -56,9 +56,12 @@ typeset -ga _ZSH_CONFIG_DEFAULT_MODULES=(
   til
   search
   ws
+  bm
 )
 
-if (( ! ${+ZSH_CONFIG_MODULES} )); then
+# Respect a user-pinned list (ZSH_CONFIG_MODULES set before sourcing this file),
+# but always refresh from defaults on re-source so new modules are picked up.
+if (( ! ${+ZSH_CONFIG_MODULES_PINNED} )); then
   typeset -ga ZSH_CONFIG_MODULES
   ZSH_CONFIG_MODULES=("${_ZSH_CONFIG_DEFAULT_MODULES[@]}")
 fi

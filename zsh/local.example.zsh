@@ -18,3 +18,8 @@
 # Machine-specific or work-only settings belong here.
 # export WORKON_HOME="$HOME/venvs"
 # alias workon='source "$WORKON_HOME/project/bin/activate"'
+
+# Project path bookmarks — use the bm module instead of manual exports.
+# Run these once to populate zsh/bookmarks, then remove the export lines:
+# bm add avlbe ~/Projects/arrival/arrival-backend
+# bm add cm_home ~/Projects/consolidated_repo/configmgmt
