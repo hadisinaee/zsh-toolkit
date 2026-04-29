@@ -57,6 +57,7 @@ typeset -ga _ZSH_CONFIG_DEFAULT_MODULES=(
   search
   ws
   bm
+  sec
 )
 
 # Respect a user-pinned list (ZSH_CONFIG_MODULES set before sourcing this file),
