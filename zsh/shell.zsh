@@ -14,6 +14,14 @@ export PATH="$HOME/.local/bin:$PATH"
 alias resource="source ~/.zshrc"
 alias tf="terraform"
 
+function falias-usage() {
+  echo "falias - fuzzy alias picker"
+  echo
+  echo "Usage:"
+  echo "  falias         open the alias picker"
+  echo "  falias --help  show help"
+}
+
 # ---------------------------------------------------------------------------
 # falias - fuzzy alias picker
 #
@@ -23,6 +31,10 @@ alias tf="terraform"
 #                 Ctrl-y copies expansion to clipboard
 # ---------------------------------------------------------------------------
 function falias() {
+  case "${1:-}" in
+    help|-h|--help) falias-usage; return 0 ;;
+  esac
+
   local out action sel expansion
   local -a lines=()
 
@@ -51,6 +63,14 @@ function falias() {
   fi
 }
 
+function fenv-usage() {
+  echo "fenv - fuzzy environment picker"
+  echo
+  echo "Usage:"
+  echo "  fenv         open the exported environment picker"
+  echo "  fenv --help  show help"
+}
+
 # ---------------------------------------------------------------------------
 # fenv - fuzzy env var picker
 #
@@ -60,6 +80,10 @@ function falias() {
 #                 Ctrl-e re-exports the var in the current shell
 # ---------------------------------------------------------------------------
 function fenv() {
+  case "${1:-}" in
+    help|-h|--help) fenv-usage; return 0 ;;
+  esac
+
   local out action line key val
   local -a lines=()
 

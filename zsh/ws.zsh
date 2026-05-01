@@ -81,7 +81,7 @@ function ws() {
     info)   ws-info "${@:2}" ;;
     rename) ws-rename "${@:2}" ;;
     cd)     ws-cd "${@:2}" ;;
-    help)   ws-help "${@:2}" ;;
+    help|-h|--help) ws-usage "${@:2}" ;;
     -n|-p|[^-]*)
       ws-new "$@"
       ;;
@@ -202,7 +202,7 @@ function ws-info() {
 }
 
 # ---------------------------------------------------------------------------
-# ws-help - display usage information
+# ws-usage - display usage information
 #
 # Usage: ws help [subcommand]
 # ---------------------------------------------------------------------------
@@ -232,10 +232,6 @@ function ws-usage() {
     help)   echo "usage: ws help [subcommand]" ;;
     *)      echo "ws: unknown subcommand: $1"; return 1 ;;
   esac
-}
-
-function ws-help() {
-  ws-usage "$@"
 }
 
 # ---------------------------------------------------------------------------

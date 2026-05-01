@@ -4,6 +4,16 @@
 
 alias k="kubectl"
 
+function kctx-usage() {
+  echo "kctx - kubectl context switcher"
+  echo
+  echo "Usage:"
+  echo "  kctx           open the context picker"
+  echo "  kctx <name>    switch directly to a context"
+  echo "  kctx -         switch to the previous context"
+  echo "  kctx -d [name] delete a context"
+}
+
 # ---------------------------------------------------------------------------
 # kctx - switch kubectl context, with fzf picker when no args given
 #
@@ -14,6 +24,10 @@ alias k="kubectl"
 #   kctx -d [name]    delete context (fzf picker if no name given)
 # ---------------------------------------------------------------------------
 function kctx() {
+  case "${1:-}" in
+    help|-h|--help) kctx-usage; return 0 ;;
+  esac
+
   local current
   current="$(kubectl config current-context 2>/dev/null)"
 

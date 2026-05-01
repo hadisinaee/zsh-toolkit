@@ -23,6 +23,14 @@ alias gst="git stash"
 alias gc="git commit -v"
 alias gss="git status -s"
 
+function gco-usage() {
+  echo "gco - git checkout helper"
+  echo
+  echo "Usage:"
+  echo "  gco           open the branch picker"
+  echo "  gco <branch>  check out a branch directly"
+}
+
 # ---------------------------------------------------------------------------
 # gco - checkout a branch, with fzf picker when no args given
 #
@@ -31,6 +39,10 @@ alias gss="git status -s"
 #   gco <branch>  direct checkout
 # ---------------------------------------------------------------------------
 function gco() {
+  case "${1:-}" in
+    help|-h|--help) gco-usage; return 0 ;;
+  esac
+
   if [[ $# -gt 0 ]]; then
     git checkout "$@"
     return
@@ -44,6 +56,14 @@ function gco() {
   [[ -n "$branch" ]] && git checkout "$branch"
 }
 
+function ga-usage() {
+  echo "ga - git add helper"
+  echo
+  echo "Usage:"
+  echo "  ga         open the file picker"
+  echo "  ga <file>  add one or more paths directly"
+}
+
 # ---------------------------------------------------------------------------
 # ga - stage files, with fzf multi-select picker when no args given
 #
@@ -52,6 +72,10 @@ function gco() {
 #   ga <file>     direct git add
 # ---------------------------------------------------------------------------
 function ga() {
+  case "${1:-}" in
+    help|-h|--help) ga-usage; return 0 ;;
+  esac
+
   if [[ $# -gt 0 ]]; then
     git add "$@"
     return
@@ -102,6 +126,14 @@ function _zsh_toolkit_git_show_diff() {
   git diff HEAD --color=always -- "$file_path"
 }
 
+function gd-usage() {
+  echo "gd - git diff helper"
+  echo
+  echo "Usage:"
+  echo "  gd         open the changed-file picker"
+  echo "  gd <path>  show git diff for one or more paths"
+}
+
 # ---------------------------------------------------------------------------
 # gd - diff files, with fzf picker when no args given
 #
@@ -110,6 +142,10 @@ function _zsh_toolkit_git_show_diff() {
 #   gd <file>     direct git diff
 # ---------------------------------------------------------------------------
 function gd() {
+  case "${1:-}" in
+    help|-h|--help) gd-usage; return 0 ;;
+  esac
+
   if [[ $# -gt 0 ]]; then
     git diff "$@"
     return
@@ -126,6 +162,14 @@ function gd() {
   [[ -n "$file" ]] && _zsh_toolkit_git_show_diff "$selected"
 }
 
+function gl-usage() {
+  echo "gl - git log helper"
+  echo
+  echo "Usage:"
+  echo "  gl         open the commit picker"
+  echo "  gl <args>  run git log --oneline --decorate <args>"
+}
+
 # ---------------------------------------------------------------------------
 # gl - interactive git log picker with rich preview
 #
@@ -134,6 +178,10 @@ function gd() {
 #   gl <args>     direct git log --oneline --decorate <args>
 # ---------------------------------------------------------------------------
 function gl() {
+  case "${1:-}" in
+    help|-h|--help) gl-usage; return 0 ;;
+  esac
+
   if [[ $# -gt 0 ]]; then
     git log --oneline --decorate "$@"
     return
@@ -154,12 +202,23 @@ function glo() {
   gl "$@"
 }
 
+function gbinfo-usage() {
+  echo "gbinfo - branch tracking summary"
+  echo
+  echo "Usage:"
+  echo "  gbinfo [pattern...]  list local branches and upstream state"
+}
+
 # ---------------------------------------------------------------------------
 # gbinfo - list local git branches and their upstream tracking state
 #
 # Usage: gbinfo [pattern...]
 # ---------------------------------------------------------------------------
 function gbinfo() {
+  case "${1:-}" in
+    help|-h|--help) gbinfo-usage; return 0 ;;
+  esac
+
   local -a patterns
   if (( $# > 0 )); then
     patterns=("$@")
@@ -212,24 +271,35 @@ function gbinfo() {
   fi
 }
 
+function git-exclude-usage() {
+  echo "git-exclude - add repo-local ignore patterns"
+  echo
+  echo "Usage:"
+  echo "  git-exclude <pattern> [pattern...]"
+}
+
 # ---------------------------------------------------------------------------
 # git-exclude - add a pattern to the repo's local git exclude file
 #
-# Invocable as: git exclude <pattern>
+# Invocable as: git-exclude <pattern>
 #
 # Usage:
-#   git exclude <pattern> [pattern...]   e.g. git exclude .env.local .envrc
+#   git-exclude <pattern> [pattern...]   e.g. git-exclude .env.local .envrc
 # ---------------------------------------------------------------------------
 function git-exclude() {
+  case "${1:-}" in
+    help|-h|--help) git-exclude-usage; return 0 ;;
+  esac
+
   if (( $# == 0 )); then
-    echo "usage: git exclude <pattern> [pattern...]"
+    git-exclude-usage
     return 1
   fi
 
   local git_dir
   git_dir="$(git rev-parse --git-dir 2>/dev/null)"
   if [[ -z "$git_dir" ]]; then
-    echo "git exclude: not in a git repository"
+    echo "git-exclude: not in a git repository"
     return 1
   fi
 
@@ -239,11 +309,11 @@ function git-exclude() {
 
   for pattern in "$@"; do
     if grep -qxF "$pattern" "$exclude_file" 2>/dev/null; then
-      echo "git exclude: '$pattern' is already in $exclude_file"
+      echo "git-exclude: '$pattern' is already in $exclude_file"
       continue
     fi
 
     echo "$pattern" >> "$exclude_file"
-    echo "git exclude: added '$pattern' to $exclude_file"
+    echo "git-exclude: added '$pattern' to $exclude_file"
   done
 }
