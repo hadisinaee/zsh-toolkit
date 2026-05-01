@@ -55,6 +55,7 @@ typeset -ga _ZSH_CONFIG_DEFAULT_MODULES=(
   k8s
   til
   search
+  zt
   ws
   bm
   sec

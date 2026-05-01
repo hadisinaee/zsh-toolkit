@@ -27,6 +27,78 @@ function _notes_delete_markdown() {
   rm -f -- "$file"
 }
 
+function til-usage() {
+  case "${1:-}" in
+    "")
+      echo "til - TIL notes"
+      echo
+      echo "Usage:"
+      echo "  til [topic]   open or create a note in ~/.til/"
+      ;;
+    *) echo "usage: til [topic]" ;;
+  esac
+}
+
+function tilv-usage() {
+  case "${1:-}" in
+    "")
+      echo "tilv - TIL note viewer"
+      echo
+      echo "Usage:"
+      echo "  tilv [topic]  view a note in ~/.til/"
+      ;;
+    *) echo "usage: tilv [topic]" ;;
+  esac
+}
+
+function todo-usage() {
+  case "${1:-}" in
+    "")
+      echo "todo - TODO notes"
+      echo
+      echo "Usage:"
+      echo "  todo [topic]  open or create a note in ~/.todo/"
+      ;;
+    *) echo "usage: todo [topic]" ;;
+  esac
+}
+
+function todov-usage() {
+  case "${1:-}" in
+    "")
+      echo "todov - TODO note viewer"
+      echo
+      echo "Usage:"
+      echo "  todov [topic]  view a note in ~/.todo/"
+      ;;
+    *) echo "usage: todov [topic]" ;;
+  esac
+}
+
+function tils-usage() {
+  case "${1:-}" in
+    "")
+      echo "tils - search TIL notes"
+      echo
+      echo "Usage:"
+      echo "  tils <query>  search ~/.til/*.md"
+      ;;
+    *) echo "usage: tils <query>" ;;
+  esac
+}
+
+function todos-usage() {
+  case "${1:-}" in
+    "")
+      echo "todos - search TODO notes"
+      echo
+      echo "Usage:"
+      echo "  todos <query>  search ~/.todo/*.md"
+      ;;
+    *) echo "usage: todos <query>" ;;
+  esac
+}
+
 function _notes_pick_markdown() {
   local dir="$1"
   local prompt="$2"
@@ -150,6 +222,9 @@ function _notes_search() {
 #   til <topic>   open (or create) ~/.til/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _til() {
+  case "${1:-}" in
+    help|-h|--help) til-usage; return 0 ;;
+  esac
   _notes_open_or_pick "$HOME/.til" "til > " "_zsh_toolkit_open_in_editor" "$1" true
 }
 
@@ -161,6 +236,9 @@ function _til() {
 #   tilv <topic>   view ~/.til/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _tilv() {
+  case "${1:-}" in
+    help|-h|--help) tilv-usage; return 0 ;;
+  esac
   _notes_open_or_pick "$HOME/.til" "til > " "bat" "$1"
 }
 
@@ -172,6 +250,9 @@ function _tilv() {
 #   todo <topic>   open (or create) ~/.todo/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _todo() {
+  case "${1:-}" in
+    help|-h|--help) todo-usage; return 0 ;;
+  esac
   _notes_open_or_pick "$HOME/.todo" "todo > " "_zsh_toolkit_open_in_editor" "$1" true
 }
 
@@ -183,6 +264,9 @@ function _todo() {
 #   todov <topic>  view ~/.todo/<topic>.md directly
 # ---------------------------------------------------------------------------
 function _todov() {
+  case "${1:-}" in
+    help|-h|--help) todov-usage; return 0 ;;
+  esac
   _notes_open_or_pick "$HOME/.todo" "todo > " "bat" "$1"
 }
 
@@ -194,6 +278,9 @@ function _todov() {
 #   tils <query>    search across all ~/.til/*.md, Enter opens your editor at line
 # ---------------------------------------------------------------------------
 function tils() {
+  case "${1:-}" in
+    help|-h|--help) tils-usage; return 0 ;;
+  esac
   if [[ -z "$1" ]]; then
     _til
     return
@@ -210,6 +297,9 @@ function tils() {
 #   todos <query>   search across all ~/.todo/*.md, Enter opens your editor at line
 # ---------------------------------------------------------------------------
 function todos() {
+  case "${1:-}" in
+    help|-h|--help) todos-usage; return 0 ;;
+  esac
   if [[ -z "$1" ]]; then
     _todo
     return

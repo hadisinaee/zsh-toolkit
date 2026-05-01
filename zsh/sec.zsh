@@ -8,8 +8,28 @@ while IFS='=' read -r _sec_name _sec_val; do
 done < "$SEC_FILE"
 unset _sec_name _sec_val
 
+function sec-usage() {
+  case "${1:-}" in
+    "")
+      echo "sec - secrets"
+      echo
+      echo "Usage:"
+      echo "  sec                 open the secret picker"
+      echo "  sec add NAME [value]  add or update a secret"
+      echo "  sec rm              remove a secret"
+      echo "  sec ls              list secret names"
+      echo "  sec help [subcommand]  show help"
+      ;;
+    add) echo "usage: sec add NAME [value]" ;;
+    rm)  echo "usage: sec rm" ;;
+    ls)  echo "usage: sec ls" ;;
+    *)   echo "sec: unknown subcommand: $1"; return 1 ;;
+  esac
+}
+
 function sec() {
   case "$1" in
+    help|-h|--help) sec-usage "${@:2}" ;;
     add) _sec_add "${@:2}" ;;
     rm)  _sec_rm ;;
     ls)  _sec_ls ;;

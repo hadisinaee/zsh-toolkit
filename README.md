@@ -72,6 +72,8 @@ alias gs='git status'
 
 Editor-based helpers use `ZSH_TOOLKIT_EDITOR`, then `EDITOR`, then `VISUAL`, then `nvim` when available, with `vi` as the final fallback.
 
+Use `zt help` to see the toolkit commands, and `zt help <command>` for command-specific usage.
+
 In the `til` and `todo` pickers, press `Ctrl-N` to create a new note from the current query.
 
 ## Modules
@@ -84,6 +86,7 @@ The default modules are:
 - `k8s`
 - `til`
 - `search`
+- `zt`
 - `ws`
 
 If you want fewer modules, set this before sourcing `init.zsh`:
