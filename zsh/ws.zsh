@@ -206,7 +206,7 @@ function ws-info() {
 #
 # Usage: ws help [subcommand]
 # ---------------------------------------------------------------------------
-function ws-help() {
+function ws-usage() {
   if [[ $# -eq 0 ]]; then
     echo "ws - workspace manager"
     echo
@@ -232,6 +232,10 @@ function ws-help() {
     help)   echo "usage: ws help [subcommand]" ;;
     *)      echo "ws: unknown subcommand: $1"; return 1 ;;
   esac
+}
+
+function ws-help() {
+  ws-usage "$@"
 }
 
 # ---------------------------------------------------------------------------

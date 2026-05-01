@@ -9,8 +9,29 @@ function _bm_delete_entry() {
 
   _zsh_toolkit_kv_update_file "$BM_FILE" "$name" "" delete
 }
+
+function bm-usage() {
+  case "${1:-}" in
+    "")
+      echo "bm - bookmarks"
+      echo
+      echo "Usage:"
+      echo "  bm                 open the bookmark picker"
+      echo "  bm add [name] [path]  add or update a bookmark"
+      echo "  bm rm              remove a bookmark"
+      echo "  bm ls              list bookmarks"
+      echo "  bm help [subcommand]  show help"
+      ;;
+    add) echo "usage: bm add [name] [path]" ;;
+    rm)  echo "usage: bm rm" ;;
+    ls)  echo "usage: bm ls" ;;
+    *)   echo "bm: unknown subcommand: $1"; return 1 ;;
+  esac
+}
+
 function bm() {
   case "$1" in
+    help|-h|--help) bm-usage "${@:2}" ;;
     add) _bm_add "${@:2}" ;;
     rm)  _bm_rm ;;
     ls)  _bm_ls ;;
