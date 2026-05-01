@@ -23,17 +23,6 @@ function _bm_delete_entry() {
     printf '%s\n' "${lines[@]}" > "$BM_FILE" || return 1
   fi
 }
-
-# Auto-export all bookmarks as env vars at init
-function _bm_export_all() {
-  local name path
-  while IFS='=' read -r name path; do
-    [[ -z "$name" || "$name" == \#* ]] && continue
-    export "${name}=${path}"
-  done < "$BM_FILE"
-}
-_bm_export_all
-
 function bm() {
   case "$1" in
     add) _bm_add "${@:2}" ;;
@@ -63,10 +52,10 @@ function _bm_pick() {
 function _bm_add() {
   local name="${1:-$(basename "$PWD")}"
   local path="${2:-$PWD}"
-  path="${path/#\~/$HOME}"
+
+  path="${~path:A}"
   sed -i '' "/^${name}=/d" "$BM_FILE"
   printf '%s=%s\n' "$name" "$path" >> "$BM_FILE"
-  export "${name}=${path}"
   echo "bookmarked: $name → $path"
 }
 
@@ -76,7 +65,6 @@ function _bm_rm() {
   name=$(cut -d= -f1 "$BM_FILE" | fzf --prompt="remove> ")
   [[ -z "$name" ]] && return
   _bm_delete_entry "$name" || return 1
-  unset "$name"
   echo "removed: $name"
 }
 
