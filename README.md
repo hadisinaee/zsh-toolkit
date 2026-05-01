@@ -119,3 +119,15 @@ source ~/Projects/zsh-toolkit/init.zsh
 - `terraform`
 
 The install script currently supports macOS + Homebrew only.
+
+## tmux setup (macOS)
+
+On macOS, new tmux sessions do not source `/etc/zprofile`, so `path_helper` never runs and PATH is nearly empty — tools like `fzf` and even `grep` will not be found inside sessions created by `ws`.
+
+Add this to `~/.tmux.conf` to start all panes as login shells:
+
+```
+set-option -g default-command "zsh -l"
+```
+
+Then reload tmux config (`tmux source ~/.tmux.conf`) or restart tmux.
