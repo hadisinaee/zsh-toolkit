@@ -20,6 +20,13 @@ function _notes_topic_file() {
   printf '%s/%s\n' "$dir" "$topic"
 }
 
+function _notes_delete_markdown() {
+  local file="$1"
+
+  [[ -n "$file" ]] || return 1
+  rm -f -- "$file"
+}
+
 function _notes_pick_markdown() {
   local dir="$1"
   local prompt="$2"
@@ -28,39 +35,68 @@ function _notes_pick_markdown() {
   local output query key selection
   local -a lines
 
-  files=("$dir"/*.md(N))
-
   if [[ "$allow_create" == "true" ]]; then
+    while true; do
+      files=("$dir"/*.md(N))
+      output="$(
+        { (( ${#files[@]} > 0 )) && printf '%s\n' "${files[@]}"; } |
+          fzf --height=40% --reverse --border --prompt="$prompt" \
+              --preview 'bat --color=always {}' \
+              --print-query \
+              --expect=enter,ctrl-n,ctrl-d \
+              --header='enter: open  ctrl-n: create from query  ctrl-d: delete'
+      )"
+
+      [[ -z "$output" ]] && return 0
+
+      lines=("${(@f)output}")
+      query="${lines[1]}"
+      key="${lines[2]}"
+      selection="${lines[3]}"
+
+      if [[ "$key" == "ctrl-n" ]]; then
+        _notes_topic_file "$dir" "$query"
+        return
+      fi
+
+      if [[ "$key" == "ctrl-d" ]]; then
+        [[ -n "$selection" ]] || continue
+        _notes_delete_markdown "$selection"
+        continue
+      fi
+
+      [[ -n "$selection" ]] && printf '%s\n' "$selection"
+      return 0
+    done
+  fi
+
+  while true; do
+    files=("$dir"/*.md(N))
+    (( ${#files[@]} == 0 )) && return 0
+
     output="$(
-      { (( ${#files[@]} > 0 )) && printf '%s\n' "${files[@]}"; } |
+      printf '%s\n' "${files[@]}" |
         fzf --height=40% --reverse --border --prompt="$prompt" \
             --preview 'bat --color=always {}' \
-            --print-query \
-            --expect=enter,ctrl-n \
-            --header='enter: open  ctrl-n: create from query'
+            --expect=enter,ctrl-d \
+            --header='enter: open  ctrl-d: delete'
     )"
 
     [[ -z "$output" ]] && return 0
 
     lines=("${(@f)output}")
-    query="${lines[1]}"
-    key="${lines[2]}"
-    selection="${lines[3]}"
+    key="${lines[1]}"
+    selection="${lines[2]}"
 
-    if [[ "$key" == "ctrl-n" ]]; then
-      _notes_topic_file "$dir" "$query"
-      return
+    if [[ "$key" == "ctrl-d" ]]; then
+      [[ -n "$selection" ]] || continue
+      _notes_delete_markdown "$selection"
+      continue
     fi
 
     [[ -n "$selection" ]] && printf '%s\n' "$selection"
     return 0
-  fi
-
-  (( ${#files[@]} == 0 )) && return 0
-
-  printf '%s\n' "${files[@]}" |
-    fzf --height=40% --reverse --border --prompt="$prompt" \
-        --preview 'bat --color=always {}'
+  done
 }
 
 function _notes_open_or_pick() {
