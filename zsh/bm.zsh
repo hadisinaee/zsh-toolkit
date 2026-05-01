@@ -16,7 +16,7 @@ function bm-usage() {
       echo "bm - bookmarks"
       echo
       echo "Usage:"
-      echo "  bm                 open the bookmark picker"
+      echo "  bm                 open the bookmark picker (Ctrl-Y copies path)"
       echo "  bm add [name] [path]  add or update a bookmark"
       echo "  bm rm              remove a bookmark"
       echo "  bm ls              list bookmarks"
@@ -46,9 +46,10 @@ function _bm_pick() {
     | fzf --prompt="bookmark> " \
           --height=40% --layout=reverse \
           --delimiter='=' \
-          --header='Enter: cd | Ctrl-d: delete bookmark' \
+          --header='Enter: cd | Ctrl-d: delete bookmark | Ctrl-y: copy path' \
           --exit-0 \
           --bind="ctrl-d:execute-silent(zsh -fc 'ZSH_CONFIG_ROOT=\"\$1\"; source \"\$ZSH_CONFIG_ROOT/zsh/bm.zsh\"; _bm_delete_entry \"\$2\"' _ \"$ZSH_CONFIG_ROOT\" \"{1}\")+reload(grep -v '^[[:space:]]*#' \"$BM_FILE\")" \
+          --bind="ctrl-y:execute-silent(printf '%s' {2..} | pbcopy)+abort" \
           --preview='rg --files "$(cut -d= -f2- <<< {})" 2>/dev/null | head -50')
   [[ -z "$line" ]] && return
   bookmark_path="${line#*=}"
