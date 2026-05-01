@@ -12,8 +12,8 @@
 # Advanced module selection.
 # Set these before sourcing init.zsh from your own ~/.zshrc if you want them
 # to affect which shared modules load.
-# typeset -ga ZSH_CONFIG_DISABLED_MODULES=(k8s ws)
-# typeset -ga ZSH_CONFIG_MODULES=(shell tools git search)
+# typeset -ga ZSH_CONFIG_DISABLED_MODULES=(k8s zt ws bm sec)
+# typeset -ga ZSH_CONFIG_MODULES=(shell tools git k8s til search zt ws bm sec)
 
 # Machine-specific or work-only settings belong here.
 # export WORKON_HOME="$HOME/venvs"

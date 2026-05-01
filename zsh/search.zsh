@@ -2,6 +2,13 @@
 # SEARCH FUNCTIONS (rg + fzf)
 # ============================================================
 
+function rgg-usage() {
+  echo "rgg - live ripgrep picker"
+  echo
+  echo "Usage:"
+  echo "  rgg [query]  search the current directory and open a match"
+}
+
 # ---------------------------------------------------------------------------
 # rgg - live interactive grep across files in the current directory
 #
@@ -12,6 +19,10 @@
 # Enter opens your configured editor at the exact matched line.
 # ---------------------------------------------------------------------------
 function rgg() {
+  case "${1:-}" in
+    help|-h|--help) rgg-usage; return 0 ;;
+  esac
+
   local query="${*:-}"
   local initial_cmd="rg --column --line-number --no-heading --color=always --smart-case"
   local result file line
@@ -36,6 +47,13 @@ function rgg() {
   _zsh_toolkit_open_in_editor +"$line" "$file"
 }
 
+function ff-usage() {
+  echo "ff - fuzzy file finder"
+  echo
+  echo "Usage:"
+  echo "  ff [pattern]  pick a file in the current directory tree"
+}
+
 # ---------------------------------------------------------------------------
 # ff - find files by name using rg + fzf
 #
@@ -46,6 +64,10 @@ function rgg() {
 # Enter opens the selected file in your configured editor.
 # ---------------------------------------------------------------------------
 function ff() {
+  case "${1:-}" in
+    help|-h|--help) ff-usage; return 0 ;;
+  esac
+
   local file
 
   if [[ -n "$1" ]]; then
