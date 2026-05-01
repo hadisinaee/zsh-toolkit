@@ -219,9 +219,6 @@ function ws-usage() {
     done
     echo
     echo "  ws <name> [path]   create or attach to a named session"
-    echo
-    echo "Note (macOS): add 'set-option -g default-command \"zsh -l\"' to ~/.tmux.conf"
-    echo "  so new sessions inherit a full PATH. See README for details."
     return 0
   fi
 
