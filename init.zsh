@@ -60,6 +60,9 @@ typeset -ga _ZSH_CONFIG_DEFAULT_MODULES=(
   sec
 )
 
+# Load shared state helpers before modules that rely on file mutation helpers.
+[[ -f "$ZSH_CONFIG_ROOT/zsh/state.zsh" ]] && source "$ZSH_CONFIG_ROOT/zsh/state.zsh"
+
 # Respect a user-pinned list (ZSH_CONFIG_MODULES set before sourcing this file),
 # but always refresh from defaults on re-source so new modules are picked up.
 if (( ! ${+ZSH_CONFIG_MODULES_PINNED} )); then
