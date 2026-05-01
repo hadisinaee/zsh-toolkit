@@ -267,9 +267,9 @@ function ws-preview() {
   tmux list-panes -t "$session" -F '  #{pane_current_command} (#{pane_current_path})' 2>/dev/null
 
   echo
-  local path branch
-  path="$(tmux list-panes -t "$session" -F '#{pane_current_path}' 2>/dev/null | /usr/bin/head -1)"
-  branch="$(git -C "$path" branch --show-current 2>/dev/null)"
+  local pane_path branch
+  pane_path="$(tmux list-panes -t "$session" -F '#{pane_current_path}' 2>/dev/null | /usr/bin/head -1)"
+  branch="$(git -C "$pane_path" branch --show-current 2>/dev/null)"
   echo "Branch: ${branch:-(no git repo)}"
 }
 
