@@ -41,7 +41,7 @@ function bm() {
 
 # fzf picker → cd; rg --files for rich directory preview
 function _bm_pick() {
-  local line path
+  local line bookmark_path
   line=$(grep -v '^[[:space:]]*#' "$BM_FILE" \
     | fzf --prompt="bookmark> " \
           --height=40% --layout=reverse \
@@ -51,18 +51,18 @@ function _bm_pick() {
           --bind="ctrl-d:execute-silent(zsh -fc 'ZSH_CONFIG_ROOT=\"\$1\"; source \"\$ZSH_CONFIG_ROOT/zsh/bm.zsh\"; _bm_delete_entry \"\$2\"' _ \"$ZSH_CONFIG_ROOT\" \"{1}\")+reload(grep -v '^[[:space:]]*#' \"$BM_FILE\")" \
           --preview='rg --files "$(cut -d= -f2- <<< {})" 2>/dev/null | head -50')
   [[ -z "$line" ]] && return
-  path="${line#*=}"
-  cd "${~path}"
+  bookmark_path="${line#*=}"
+  cd "${~bookmark_path}"
 }
 
 # add bookmark
 function _bm_add() {
   local name="${1:-$(basename "$PWD")}"
-  local path="${2:-$PWD}"
+  local bookmark_path="${2:-$PWD}"
 
-  path="${~path:A}"
-  _zsh_toolkit_kv_update_file "$BM_FILE" "$name" "$path" set
-  echo "bookmarked: $name → $path"
+  bookmark_path="${~bookmark_path:A}"
+  _zsh_toolkit_kv_update_file "$BM_FILE" "$name" "$bookmark_path" set
+  echo "bookmarked: $name → $bookmark_path"
 }
 
 # remove via fzf picker
