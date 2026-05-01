@@ -22,14 +22,14 @@ function _sec_keys() {
 }
 
 # fzf picker — keys only
-# Enter → copy value to clipboard; Ctrl-e → export in current shell
+# Enter → copy value to clipboard; Ctrl-e → export in current shell; Ctrl-y → copy key
 function _sec_pick() {
   local out action key val
 
   out=$(_sec_keys | fzf --prompt="secret> " \
-    --expect=ctrl-e \
+    --expect=ctrl-e,ctrl-y \
     --height=40% --layout=reverse \
-    --header='Enter: copy | Ctrl-e: export')
+    --header='Enter: copy value | Ctrl-e: export | Ctrl-y: copy key')
 
   [[ -z "$out" ]] && return
   action=$(head -1 <<< "$out")
@@ -39,6 +39,9 @@ function _sec_pick() {
   if [[ "$action" == "ctrl-e" ]]; then
     export "${key}=${val}"
     echo "exported: $key"
+  elif [[ "$action" == "ctrl-y" ]]; then
+    printf '%s' "$key" | pbcopy
+    echo "copied key: $key"
   else
     printf '%s' "$val" | pbcopy
     echo "copied: $key"
