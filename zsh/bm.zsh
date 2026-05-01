@@ -6,22 +6,8 @@ function _bm_delete_entry() {
   emulate -L zsh
 
   local name="$1"
-  local line
-  local -a lines
 
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    if [[ "$line" == *=* && "${line%%=*}" == "$name" ]]; then
-      continue
-    fi
-
-    lines+=("$line")
-  done < "$BM_FILE"
-
-  : > "$BM_FILE" || return 1
-
-  if (( ${#lines[@]} > 0 )); then
-    printf '%s\n' "${lines[@]}" > "$BM_FILE" || return 1
-  fi
+  _zsh_toolkit_kv_update_file "$BM_FILE" "$name" "" delete
 }
 function bm() {
   case "$1" in
@@ -54,8 +40,7 @@ function _bm_add() {
   local path="${2:-$PWD}"
 
   path="${~path:A}"
-  sed -i '' "/^${name}=/d" "$BM_FILE"
-  printf '%s=%s\n' "$name" "$path" >> "$BM_FILE"
+  _zsh_toolkit_kv_update_file "$BM_FILE" "$name" "$path" set
   echo "bookmarked: $name → $path"
 }
 

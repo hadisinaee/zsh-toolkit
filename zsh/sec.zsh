@@ -57,8 +57,7 @@ function _sec_add() {
     read -rs val
     echo
   fi
-  sed -i '' "/^${name}=/d" "$SEC_FILE"
-  printf '%s=%s\n' "$name" "$val" >> "$SEC_FILE"
+  _zsh_toolkit_kv_update_file "$SEC_FILE" "$name" "$val" set
   export "${name}=${val}"
   echo "saved: $name"
 }
@@ -68,7 +67,7 @@ function _sec_rm() {
   local name
   name=$(_sec_keys | fzf --prompt="remove secret> ")
   [[ -z "$name" ]] && return
-  sed -i '' "/^${name}=/d" "$SEC_FILE"
+  _zsh_toolkit_kv_update_file "$SEC_FILE" "$name" "" delete
   unset "$name"
   echo "removed: $name"
 }
