@@ -48,7 +48,7 @@ function _bm_pick() {
           --delimiter='=' \
           --header='Enter: cd | Ctrl-d: delete bookmark | Ctrl-y: copy path' \
           --exit-0 \
-          --bind="ctrl-d:execute-silent(zsh -fc 'ZSH_CONFIG_ROOT=\"\$1\"; source \"\$ZSH_CONFIG_ROOT/zsh/bm.zsh\"; _bm_delete_entry \"\$2\"' _ \"$ZSH_CONFIG_ROOT\" \"{1}\")+reload(grep -v '^[[:space:]]*#' \"$BM_FILE\")" \
+          --bind="ctrl-d:execute-silent(zsh -fc 'ZSH_CONFIG_ROOT=\"\$1\"; source \"\$ZSH_CONFIG_ROOT/zsh/state.zsh\"; source \"\$ZSH_CONFIG_ROOT/zsh/bm.zsh\"; _bm_delete_entry \"\$2\"' _ \"$ZSH_CONFIG_ROOT\" \"{1}\")+reload(grep -v '^[[:space:]]*#' \"$BM_FILE\")" \
           --bind="ctrl-y:execute-silent(printf '%s' {2..} | pbcopy)+abort" \
           --preview='rg --files "$(cut -d= -f2- <<< {})" 2>/dev/null | head -50')
   [[ -z "$line" ]] && return
