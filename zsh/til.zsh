@@ -81,7 +81,7 @@ function tils-usage() {
       echo "tils - search TIL notes"
       echo
       echo "Usage:"
-      echo "  tils <query>  search ~/.til/*.md"
+      echo "  tils [query]  live-search ~/.til/*.md, refine query interactively"
       ;;
     *) echo "usage: tils <query>" ;;
   esac
@@ -93,7 +93,7 @@ function todos-usage() {
       echo "todos - search TODO notes"
       echo
       echo "Usage:"
-      echo "  todos <query>  search ~/.todo/*.md"
+      echo "  todos [query]  live-search ~/.todo/*.md, refine query interactively"
       ;;
     *) echo "usage: todos <query>" ;;
   esac
@@ -195,17 +195,21 @@ function _notes_search() {
   local dir="$1"
   local prompt="$2"
   local query="$3"
-  local -a files
   local result file line
 
-  files=("$dir"/*.md(N))
-  (( ${#files[@]} == 0 )) && return 0
+  [[ -z "$(echo "$dir"/*.md(N))" ]] && return 0
 
-  result="$(rg --line-number --color=always --smart-case -- "$query" "${files[@]}" 2>/dev/null |
-    fzf --ansi --height=50% --reverse --border --prompt="$prompt" \
+  local rg_cmd="rg --line-number --color=always --smart-case -- {q} $dir/*.md"
+
+  result="$(
+    fzf --ansi --disabled --query "$query" \
+        --bind "start:reload:$rg_cmd || true" \
+        --bind "change:reload:$rg_cmd || true" \
+        --height=50% --reverse --border --prompt="$prompt" \
         --delimiter=':' \
         --preview 'bat --color=always --highlight-line {2} {1}' \
-        --preview-window='right:50%:wrap:+{2}-5')"
+        --preview-window='right:50%:wrap:+{2}-5'
+  )"
 
   [[ -z "$result" ]] && return 0
 
@@ -271,39 +275,29 @@ function _todov() {
 }
 
 # ---------------------------------------------------------------------------
-# tils - search inside TIL files with rg + fzf
+# tils - live-search inside TIL files with rg + fzf
 #
 # Usage:
-#   tils            falls back to til picker (no query)
-#   tils <query>    search across all ~/.til/*.md, Enter opens your editor at line
+#   tils            open live search with empty query
+#   tils <query>    pre-fill query; refine interactively; Enter opens editor at line
 # ---------------------------------------------------------------------------
 function tils() {
   case "${1:-}" in
     help|-h|--help) tils-usage; return 0 ;;
   esac
-  if [[ -z "$1" ]]; then
-    _til
-    return
-  fi
-
-  _notes_search "$HOME/.til" "tils > " "$1"
+  _notes_search "$HOME/.til" "tils > " "${1:-}"
 }
 
 # ---------------------------------------------------------------------------
-# todos - search inside TODO files with rg + fzf
+# todos - live-search inside TODO files with rg + fzf
 #
 # Usage:
-#   todos           falls back to todo picker (no query)
-#   todos <query>   search across all ~/.todo/*.md, Enter opens your editor at line
+#   todos            open live search with empty query
+#   todos <query>    pre-fill query; refine interactively; Enter opens editor at line
 # ---------------------------------------------------------------------------
 function todos() {
   case "${1:-}" in
     help|-h|--help) todos-usage; return 0 ;;
   esac
-  if [[ -z "$1" ]]; then
-    _todo
-    return
-  fi
-
-  _notes_search "$HOME/.todo" "todos > " "$1"
+  _notes_search "$HOME/.todo" "todos > " "${1:-}"
 }
