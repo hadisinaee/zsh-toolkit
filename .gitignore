@@ -3,3 +3,4 @@ zsh/local.zsh
 zsh/local.d/
 zsh/bookmarks
 zsh/secrets
+plugins/

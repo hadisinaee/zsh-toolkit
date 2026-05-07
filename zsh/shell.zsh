@@ -7,6 +7,17 @@ export GPG_TTY="$(tty)"
 export HISTIGNORE="pwd:ls:cd:ll"
 export DISABLE_AUTO_TITLE="true"
 
+# --- History ---
+HISTSIZE=10000
+HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
+SAVEHIST=$HISTSIZE
+setopt APPEND_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+
 # --- Paths ---
 export PATH="$HOME/.local/bin:$PATH"
 
